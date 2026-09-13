@@ -1,0 +1,22 @@
+/* Native system fonts and compositor-only entrance motion: no animation library. */
+:root{color-scheme:dark;--gold:#dfc18b;--muted:#a8a7a3;--line:#34322e}
+body{background:#101111;color:#eeece6;background-image:radial-gradient(ellipse at 95% 0%,#34302455,transparent 55%)}
+aside{background:#111212;border-right:1px solid var(--line);padding-top:44px}
+.brand{font-weight:500;letter-spacing:3px}.brand b{color:var(--gold);font-weight:300;font-size:50px}
+aside .muted{font-size:11px;letter-spacing:1.3px;color:var(--muted)}
+nav{gap:10px;margin-top:50px}nav a{border:1px solid transparent;border-radius:3px;padding:15px 12px;letter-spacing:1px;font-size:12px;transition:transform .2s,background .2s,color .2s}
+nav a.active,nav a:hover{background:#c9a96a12;color:var(--gold);border-color:#9a81564a;transform:translateX(3px)}
+main{padding-top:42px}header{padding-bottom:20px;border-bottom:1px solid var(--line)}h1{font-weight:400;letter-spacing:-1.5px;font-size:36px}h2{font-weight:500}h3{font-weight:500}.eyebrow{color:var(--gold);font-size:10px;letter-spacing:2.5px}
+.card{background:linear-gradient(135deg,#202121,#181919);border-color:var(--line);border-radius:8px;padding:26px;box-shadow:0 14px 38px #00000018;animation:arrive .4s both}
+.hero{background:linear-gradient(120deg,#282721,#181b1b);border-color:var(--gold);border-radius:8px}.hero .eyebrow{color:var(--gold)}.hero .hint{color:#bebbb1}
+.hint,.muted,.stat span,.stat small,.target-row small,.source-row,.split-item small,footer,small{color:var(--muted)}
+a,details summary{color:var(--gold)}.stat strong{color:#ecd3a5;font-weight:400}.stat{position:relative;overflow:hidden}.stat:after{content:'';position:absolute;inset:auto 0 0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+button,.button,input,select,textarea{background:#191b1b;color:#eeece6;border-color:#48473f;border-radius:4px}button,.button{transition:transform .18s,background .18s,border-color .18s}button:hover,.button:hover{background:#353127;border-color:var(--gold);transform:translateY(-2px)}button:active{transform:translateY(0)}button.primary,.button.primary{color:#191813;background:var(--gold);border-color:var(--gold)}
+label{color:#c2beb4}td,th,.target-row{border-color:var(--line)}th{color:var(--gold)}.notice{background:#322c20;color:#ead2a4;border-color:var(--gold)}.negative{color:#ff9d9d!important}.credit-value{color:#91d9b7}.ledger-bar{background:#393a34}.month-tile,.ledger-month{background:#202121;color:#eeece6;border-color:var(--line)}.month-tile.done{background:#22352c}.heat-table tfoot{background:#292a26}.heat-table small{color:#b7b6ae}
+.original-shell{padding:22px}.original-frame{display:block;width:100%;height:82vh;min-height:560px;border:1px solid var(--line);border-radius:5px;margin-top:20px;background:#111}.original-empty{padding:70px 24px;background:radial-gradient(ellipse at 80% 50%,#71603d22,transparent 70%);margin-top:20px;border:1px solid var(--line)}.original-empty h3{font-size:27px;margin:14px 0}.original-empty p{max-width:620px}.original-shell .row h2{margin:7px 0 0}
+details[open]>div{animation:arrive .25s both}.news-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.news-grid article{padding:18px;border:1px solid var(--line);border-radius:5px}.news-grid a{text-decoration:none}.news-grid p{padding:12px 0;border-bottom:1px solid var(--line)}
+@keyframes arrive{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:900px){.news-grid{grid-template-columns:1fr}.original-shell{padding:14px}}
+@media(max-width:700px){aside{padding:20px}nav{display:flex;overflow-x:auto;margin-top:18px}nav a{flex:0 0 auto;font-size:10px;padding:12px 8px}main{padding:18px}.original-frame{height:78vh}.original-empty{padding:35px 18px}h1{font-size:28px}.card{padding:18px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+@media print{body,.card,.hero{background:white;color:black;box-shadow:none}.original-frame{height:100vh}*{animation:none!important}}

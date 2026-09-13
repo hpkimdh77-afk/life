@@ -74,4 +74,18 @@ function ledgerView(){
  $('ledgerCsv').onclick=()=>{const cell=v=>typeof v==='number'?String(v):'"'+String(v??'').replace(/^[=+@-]/,"'$&").replace(/"/g,'""')+'"';download('2026_목적별_가계부.csv','\uFEFF'+[['원본행','날짜','종류','목적','세부','내용','메모','원장금액','근거'],...filtered.map(r=>[r.id,r.date,r.type,r.group,r.detail,r.name,r.memo,r.amount,r.reason])].map(r=>r.map(cell).join(',')).join('\r\n'),'text/csv;charset=utf-8')};draw();
 }
 
-function render(){renderBase();if(section==='wiki'){wikiView();$('title').textContent='내 계획';const reading=document.createElement('details');reading.className='card';reading.innerHTML='<summary>추천도서 · 읽고 적용하기</summary>'+growthMarkup();$('content').append(reading);}if(section==='investment'){investmentView();investmentSourcesView();}if(section==='finance'){const planning=document.createElement('div');while($('content').firstChild)planning.append($('content').firstChild);if(window.LEDGER_DATA)ledgerView();else $('content').innerHTML='<section class="card"><h2>실제 가계부를 먼저 불러오세요</h2><button onclick="openPrivateLedger()">Excel 가계부 불러오기</button></section>';const details=document.createElement('details');details.className='card';details.innerHTML='<summary>2027 계획·실적 입력 펼치기</summary>';details.append(planning);$('content').append(details);}if(section==='assets')assetView();if(section==='growth')growthView();if(section==='home'){ $('content').innerHTML='';if(window.LEDGER_DATA)ledgerView();else $('content').innerHTML=`<section class="hero"><span class="eyebrow">내 PC에서만 읽는 개인 데이터</span><h2>엑셀 하나로 돈의 흐름과 자산을 함께 봅니다.</h2><p>뱅크샐러드에서 받은 .xlsx를 선택하세요. 가계부와 재무현황을 브라우저 안에서 읽습니다.</p><button class="primary" onclick="openPrivateLedger()">Excel 가계부 불러오기</button><p class="hint">현재 제공된 형식의 2026년 1월~9월 13일 거래를 지원합니다. 2025년 거래는 제외합니다. 파일을 GitHub나 외부 서버로 보내지 않습니다.</p></section><div class="grid"><section class="card"><h2>01 · 소비의 목적을 구분</h2><p>차량 구매를 쇼핑에서 분리하고 환급·대출·확인 필요를 따로 봅니다.</p></section><section class="card"><h2>02 · 자산과 부채를 확인</h2><p>원본 자산 현황을 불러온 뒤 기준일과 누락 항목을 보완하세요.</p><a class="button" href="#assets">자산 직접 입력</a></section></div>`;$('content').insertAdjacentHTML('beforeend',`<section class="card gap"><div class="row"><div><h2>기록을 다음 행동으로</h2><p>운동 루틴 · EHS/AI 결과물 · 한 권 읽고 적용하기</p></div><a class="button" href="#growth">추천도서와 실행 제안</a><a class="button" href="#assets">자산·부채</a></div></section>`);}if(location.hash==='#heat'&&$('heat'))$('heat').scrollIntoView();document.querySelector('header label').style.display=['home','assets','growth','investment','wiki'].includes(section)?'none':'';}
+function render(){
+ releaseOriginalFrame();renderBase();
+ if(section==='wiki'){wikiView();$('title').textContent='내 계획';const reading=document.createElement('details');reading.className='card';reading.innerHTML='<summary>추천도서 · 읽고 적용하기</summary>'+growthMarkup();$('content').append(reading);}
+ if(section==='investment'){investmentView();investmentSourcesView();newsView();}
+ if(section==='finance'){
+  const planning=document.createElement('div');while($('content').firstChild)planning.append($('content').firstChild);
+  mountOriginalFinance();
+  const analysis=document.createElement('details');analysis.className='card';analysis.innerHTML='<summary>엑셀 분석 · 환급·자산 취득을 구분한 소비 분석</summary>';
+  if(window.LEDGER_DATA){ledgerView();analysis.append($('ledger'));}else{analysis.insertAdjacentHTML('beforeend','<p>엑셀 거래내역으로 별도 분석합니다.</p><button onclick="openPrivateLedger()">Excel 불러오기</button>');}
+  $('content').append(analysis);
+  const details=document.createElement('details');details.className='card';details.innerHTML='<summary>2027 계획·실적 입력</summary>';details.append(planning);$('content').append(details);
+ }
+ if(section==='assets')assetView();
+ document.querySelector('header label').style.display=['finance','review'].includes(section)?'':'none';
+}

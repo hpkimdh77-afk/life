@@ -34,3 +34,12 @@ GitHub Actions의 Refresh public investment data가 평일 한국시간 18:30에
 
 ## 소비 히트맵
 돈 화면의 월별 히트맵을 복구했습니다. 생활소비 또는 전체 지출을 표시하며 환급을 차감한 순지출 기준입니다. 셀 클릭은 해당 월·목적·세부항목으로 거래를 필터링합니다. #heat 링크도 지원합니다.
+
+
+## 현재 화면과 업데이트
+- 메뉴: 01 FINANCE / 02 ASSETS / 03 INVESTMENT / 04 REVIEW / 05 LIFE WIKI.
+- FINANCE 상단에서 기존 MASTER v4 FINAL HTML을 선택하면 원본을 수정하지 않고 격리된 화면에서 실행합니다. 원본은 이 브라우저에 저장되고 전체 백업에 포함됩니다.
+- 다른 기기에서는 전체 백업을 불러오세요. 개인 가계부와 원본 HTML은 GitHub로 전송되지 않습니다.
+- 공개 ETF, 블로그, 삼성전자·Microsoft·TechCrunch 뉴스 목록은 매시간 17분 갱신을 시도합니다. GitHub 작업 지연 및 출처의 접근 제한이 있을 수 있습니다.
+- main에 변경을 올리면 같은 작업이 공개 정보 수집과 사이트 배포를 실행합니다. GitHub 저장소 Settings → Pages → Source는 GitHub Actions로 설정해야 합니다.
+- 화면 애니메이션은 외부 라이브러리 없이 동작하며 기기의 동작 줄이기 설정을 따릅니다. 원본 HTML 내부의 동작은 원본을 그대로 따릅니다.

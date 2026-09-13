@@ -18,6 +18,8 @@ ETF = [
 ]
 BLOGS = ['teasky0221', 'show0159', 'survivaldopb', 'imbk6390']
 HOSTS = {'timeetf.co.kr', 'www.timeetf.co.kr', 'www.samsungactive.co.kr', 'samsungactive.co.kr', 'rss.blog.naver.com', 'blog.naver.com', 'm.blog.naver.com'}
+NEWS = [('삼성전자 뉴스룸','https://news.samsung.com/kr/feed','news.samsung.com'),('Microsoft · AI / 기술','https://blogs.microsoft.com/feed/','blogs.microsoft.com'),('TechCrunch · 기술 뉴스','https://techcrunch.com/feed/','techcrunch.com')]
+HOSTS.update(n[2] for n in NEWS)
 ROBOTS = {}
 
 class SafeRedirect(urllib.request.HTTPRedirectHandler):
@@ -111,8 +113,18 @@ def parse_rss(text, blog):
  if not items:raise ValueError('공개 RSS에서 글 목록을 확인하지 못함')
  return items
 
+def parse_news(text, host):
+ root=ET.fromstring(text);items=[]
+ for item in root.findall('.//item'):
+  title=(item.findtext('title') or '').strip();url=(item.findtext('link') or '').strip();u=urllib.parse.urlparse(url)
+  if not title or u.scheme!='https' or u.hostname!=host:continue
+  items.append({'title':title[:250],'url':url,'date':item.findtext('pubDate') or None})
+  if len(items)==6:break
+ if not items:raise ValueError('공개 뉴스 목록을 확인하지 못함')
+ return items
+
 def collect():
- now=dt.datetime.now(dt.timezone.utc).isoformat();out={'attemptedAt':now,'funds':[],'blogs':[]}
+ now=dt.datetime.now(dt.timezone.utc).isoformat();out={'attemptedAt':now,'funds':[],'blogs':[],'news':[]}
  for name,code,url in ETF:
   result={'name':name,'code':code,'url':url,'status':'unavailable','attemptedAt':now}
   try:result.update(parse_etf(fetch(url),code));result['status']='ok';result['collectedAt']=now
@@ -123,9 +135,14 @@ def collect():
   try:result['items']=parse_rss(fetch('https://rss.blog.naver.com/'+blog+'.xml'),blog);result['status']='ok';result['collectedAt']=now
   except Exception as e:result['message']=str(e)[:180]
   out['blogs'].append(result)
+ for name,url,host in NEWS:
+  result={'name':name,'url':url,'status':'unavailable','attemptedAt':now}
+  try:result['items']=parse_news(fetch(url),host);result['status']='ok';result['collectedAt']=now
+  except Exception as e:result['message']=str(e)[:180]
+  out['news'].append(result)
  return out
 
 if __name__=='__main__':
  data=collect();target=pathlib.Path('assets/public-sources.js');target.parent.mkdir(exist_ok=True)
  target.write_text('window.PUBLIC_SOURCES='+json.dumps(data,ensure_ascii=False).replace('</','<\\/')+';',encoding='utf-8')
- print(json.dumps({'successful':sum(r['status']=='ok' for r in data['funds']+data['blogs']),'total':7}))
+ print(json.dumps({'successful':sum(r['status']=='ok' for r in data['funds']+data['blogs']+data['news']),'total':10}))
