@@ -1,6 +1,7 @@
 """Fetch an allowlisted set of public sources; never read personal portfolio data."""
 import datetime as dt
 import json
+import hashlib
 import pathlib
 import re
 import urllib.request
@@ -123,8 +124,43 @@ def parse_news(text, host):
  if not items:raise ValueError('공개 뉴스 목록을 확인하지 못함')
  return items
 
+TELEGRAM = ['daegurr','gaoshoukorea','insidertracking','YeouidoStory2']
+HOSTS.add('t.me')
+class TelegramPosts(HTMLParser):
+ def __init__(self, channel):
+  super().__init__();self.channel=channel;self.items=[];self.current=None;self.depth=0;self.text_depth=None
+ def handle_starttag(self, tag, attrs):
+  a=dict(attrs)
+  if tag=='div':
+   self.depth+=1
+   post=a.get('data-post','')
+   if re.fullmatch(re.escape(self.channel)+r'/[0-9]+',post,re.I):
+    self.current={'url':'https://t.me/'+post,'date':None,'parts':[]};self.post_depth=self.depth
+   if self.current and 'tgme_widget_message_text' in a.get('class','').split():self.text_depth=self.depth
+  if self.current and tag=='time':self.current['date']=a.get('datetime')
+  if self.current and self.text_depth and tag=='br':self.current['parts'].append(' ')
+ def handle_data(self,data):
+  if self.current and self.text_depth:self.current['parts'].append(data)
+ def handle_endtag(self,tag):
+  if tag!='div':return
+  if self.text_depth==self.depth:self.text_depth=None
+  if self.current and self.post_depth==self.depth:
+   text=' '.join(''.join(self.current.pop('parts')).split())
+   # Keep only a short preview, not complete channel articles.
+   self.current['fingerprint']=hashlib.sha256(text.encode()).hexdigest() if text else self.current['url']
+   self.current['title']=text[:90] if text else '사진·첨부 게시물 · 원문에서 확인'
+   self.current['tags']=[label for label,words in [('삼성전자',['삼성전자','삼전']),('하이닉스',['하이닉스','hynix']),('나스닥',['나스닥','nasdaq']),('반도체',['반도체','hbm']),('ETF',['etf'])] if any(w in text.lower() for w in words)]
+   self.items.append(self.current);self.current=None
+  self.depth-=1
+
+def parse_telegram(html,channel):
+ p=TelegramPosts(channel);p.feed(html)
+ unique={i['url']:i for i in p.items}
+ if not unique:raise ValueError('공개 게시물 미확인 · 접근 제한 또는 화면 구조 변경')
+ return sorted(unique.values(),key=lambda i:int(i['url'].rsplit('/',1)[1]),reverse=True)[:8]
+
 def collect():
- now=dt.datetime.now(dt.timezone.utc).isoformat();out={'attemptedAt':now,'funds':[],'blogs':[],'news':[]}
+ now=dt.datetime.now(dt.timezone.utc).isoformat();out={'attemptedAt':now,'funds':[],'blogs':[],'news':[],'telegram':[]}
  for name,code,url in ETF:
   result={'name':name,'code':code,'url':url,'status':'unavailable','attemptedAt':now}
   try:result.update(parse_etf(fetch(url),code));result['status']='ok';result['collectedAt']=now
@@ -140,9 +176,14 @@ def collect():
   try:result['items']=parse_news(fetch(url),host);result['status']='ok';result['collectedAt']=now
   except Exception as e:result['message']=str(e)[:180]
   out['news'].append(result)
+ for channel in TELEGRAM:
+  result={'name':channel,'url':'https://t.me/s/'+channel,'status':'unavailable','attemptedAt':now}
+  try:result['items']=parse_telegram(fetch(result['url']),channel);result['status']='ok';result['collectedAt']=now
+  except Exception as e:result['message']=str(e)[:180]
+  out['telegram'].append(result)
  return out
 
 if __name__=='__main__':
  data=collect();target=pathlib.Path('assets/public-sources.js');target.parent.mkdir(exist_ok=True)
  target.write_text('window.PUBLIC_SOURCES='+json.dumps(data,ensure_ascii=False).replace('</','<\\/')+';',encoding='utf-8')
- print(json.dumps({'successful':sum(r['status']=='ok' for r in data['funds']+data['blogs']+data['news']),'total':10}))
+ print(json.dumps({'successful':sum(r['status']=='ok' for r in data['funds']+data['blogs']+data['news']+data['telegram']),'total':14}))
