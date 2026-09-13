@@ -6,3 +6,6 @@ assets/ledger-data.js
 *backup*.json
 *.zip
 사용설명서.txt
+
+__pycache__/
+*.pyc

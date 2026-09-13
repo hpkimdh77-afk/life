@@ -1,0 +1,52 @@
+name: Refresh public investment data
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 9 * * 1-5'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/collect_sources.py'
+      - 'assets/investment-sources.js'
+      - '.github/workflows/public-data.yml'
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: public-data-pages
+  cancel-in-progress: false
+jobs:
+  refresh-and-deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Collect only public information
+        run: python scripts/collect_sources.py
+      - name: Prepare public site files only
+        shell: python
+        run: |
+          import pathlib, subprocess, shutil
+          output=pathlib.Path('_site'); output.mkdir()
+          for name in subprocess.check_output(['git','ls-files','-z']).decode().split('\0'):
+              if not name: continue
+              p=pathlib.Path(name)
+              if p.suffix not in ('.html','.css','.js','.md'): continue
+              if p.parts[0] in ('.github','scripts','01_FINANCE'): continue
+              if p.name=='ledger-data.js': continue
+              dst=output/p; dst.parent.mkdir(parents=True,exist_ok=True); shutil.copyfile(p,dst)
+          shutil.copyfile('assets/public-sources.js',output/'assets/public-sources.js')
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - name: Deploy refreshed public data
+        id: deployment
+        uses: actions/deploy-pages@v4
