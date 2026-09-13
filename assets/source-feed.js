@@ -16,7 +16,7 @@ function newsView(){
  $('content').append(box);
 }
 // Re-read public data hourly while the tab is open; only replace the feed, never personal inputs.
-setInterval(async()=>{try{const response=await fetch('assets/public-sources.js?t='+Date.now(),{cache:'no-store'});if(!response.ok)return;const raw=await response.text();const match=raw.match(/^window\.PUBLIC_SOURCES=(.*);\s*$/s);if(!match)return;const next=JSON.parse(match[1]);if(next.attemptedAt&&next.attemptedAt!==window.PUBLIC_SOURCES?.attemptedAt){window.PUBLIC_SOURCES=next;if(typeof section!=='undefined'&&section==='investment'){publicFeedView();newsView();telegramView();briefingView()}document.getElementById('saveState').textContent='공개 투자 정보·뉴스가 갱신되었습니다.'}}catch(e){}},60000);
+setInterval(async()=>{try{const response=await fetch('assets/public-sources.js?t='+Date.now(),{cache:'no-store'});if(!response.ok)return;const raw=await response.text();const match=raw.match(/^window\.PUBLIC_SOURCES=(.*);\s*$/s);if(!match)return;const next=JSON.parse(match[1]);if(next.attemptedAt&&next.attemptedAt!==window.PUBLIC_SOURCES?.attemptedAt){window.PUBLIC_SOURCES=next;if(typeof section!=='undefined'&&section==='investment'){publicFeedView();newsView();telegramView();briefingView();orderInvestment()}document.getElementById('saveState').textContent='공개 투자 정보·뉴스가 갱신되었습니다.'}}catch(e){}},60000);
 
 function telegramView(){
  document.getElementById('telegramPanel')?.remove();const panel=document.createElement('section');panel.id='telegramPanel';panel.className='card';

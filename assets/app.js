@@ -77,7 +77,7 @@ function ledgerView(){
 function render(){
  releaseOriginalFrame();renderBase();
  if(section==='wiki'){wikiView();$('title').textContent='내 계획';const reading=document.createElement('details');reading.className='card';reading.innerHTML='<summary>추천도서 · 읽고 적용하기</summary>'+growthMarkup();$('content').append(reading);careerView();}
- if(section==='investment'){investmentView();investmentSourcesView();newsView();telegramView();briefingView();}
+ if(section==='investment'){investmentView();investmentSourcesView();newsView();telegramView();briefingView();orderInvestment();}
  if(section==='finance'){
   const planning=document.createElement('div');while($('content').firstChild)planning.append($('content').firstChild);
   $('title').textContent='가계부';
