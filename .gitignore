@@ -1,0 +1,8 @@
+assets/ledger-data.js
+01_FINANCE/
+*.xlsx
+*.xls
+*.csv
+*backup*.json
+*.zip
+사용설명서.txt
