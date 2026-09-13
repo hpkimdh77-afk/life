@@ -76,11 +76,11 @@ function ledgerView(){
 
 function render(){
  releaseOriginalFrame();renderBase();
- if(section==='wiki'){wikiView();$('title').textContent='내 계획';const reading=document.createElement('details');reading.className='card';reading.innerHTML='<summary>추천도서 · 읽고 적용하기</summary>'+growthMarkup();$('content').append(reading);}
+ if(section==='wiki'){wikiView();$('title').textContent='내 계획';const reading=document.createElement('details');reading.className='card';reading.innerHTML='<summary>추천도서 · 읽고 적용하기</summary>'+growthMarkup();$('content').append(reading);careerView();}
  if(section==='investment'){investmentView();investmentSourcesView();newsView();}
  if(section==='finance'){
   const planning=document.createElement('div');while($('content').firstChild)planning.append($('content').firstChild);
-  mountOriginalFinance();
+  mountOriginalFinance();bonusView();
   const analysis=document.createElement('details');analysis.className='card';analysis.innerHTML='<summary>엑셀 분석 · 환급·자산 취득을 구분한 소비 분석</summary>';
   if(window.LEDGER_DATA){ledgerView();analysis.append($('ledger'));}else{analysis.insertAdjacentHTML('beforeend','<p>엑셀 거래내역으로 별도 분석합니다.</p><button onclick="openPrivateLedger()">Excel 불러오기</button>');}
   $('content').append(analysis);
