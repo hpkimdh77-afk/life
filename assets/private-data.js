@@ -22,4 +22,5 @@ function parseLedger(text){
  return validateLedger(JSON.parse(body));
 }
 let ledgerLoadError='';
+try{if(window.LEDGER_DATA)window.LEDGER_DATA=validateLedger(window.LEDGER_DATA)}catch(e){window.LEDGER_DATA=null;ledgerLoadError='기본 가계부 검증 실패'}
 try{const saved=localStorage.getItem(LEDGER_KEY);if(saved)window.LEDGER_DATA=parseLedger(saved)}catch(e){ledgerLoadError='저장된 가계부를 읽지 못했습니다. 개인 데이터 파일을 다시 불러와 주세요.'}

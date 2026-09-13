@@ -37,7 +37,6 @@ jobs:
               p=pathlib.Path(name)
               if p.suffix not in ('.html','.css','.js','.md'): continue
               if p.parts[0] in ('.github','scripts','01_FINANCE'): continue
-              if p.name=='ledger-data.js': continue
               dst=output/p; dst.parent.mkdir(parents=True,exist_ok=True); shutil.copyfile(p,dst)
           shutil.copyfile('assets/public-sources.js',output/'assets/public-sources.js')
       - uses: actions/upload-pages-artifact@v3
