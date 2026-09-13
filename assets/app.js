@@ -79,15 +79,14 @@ function render(){
  if(section==='wiki'){wikiView();$('title').textContent='내 계획';const reading=document.createElement('details');reading.className='card';reading.innerHTML='<summary>추천도서 · 읽고 적용하기</summary>'+growthMarkup();$('content').append(reading);careerView();}
  if(section==='investment'){investmentView();investmentSourcesView();newsView();telegramView();briefingView();orderInvestment();}
  if(section==='finance'){
-  const planning=document.createElement('div');while($('content').firstChild)planning.append($('content').firstChild);
+  $('content').replaceChildren();
   $('title').textContent='가계부';
   if(window.LEDGER_DATA){ledgerView();}else{$('content').innerHTML='<section class="card"><h2>가계부</h2><p>엑셀을 불러오면 월별 지출·분류·거래내역이 여기에 펼쳐집니다.</p><button onclick="openPrivateLedger()">가계부 엑셀 불러오기</button></section>';}
   const jump=document.createElement('div');jump.className='row card';jump.innerHTML='<span>보유 종목 · 텔레그램 채널 · 투자 뉴스</span><a class="button primary" href="#investment">투자 · INVESTMENT 바로가기 →</a>';$('content').append(jump);
   bonusView();
-  const details=document.createElement('details');details.className='card';details.innerHTML='<summary>2027 계획·실적 입력</summary>';details.append(planning);$('content').append(details);
   mountOriginalFinance();
   const original=$('content').lastElementChild;const archive=document.createElement('details');archive.className='card';archive.innerHTML='<summary>기존 원본 HTML · 불러오기 / 열기</summary>';archive.append(original);$('content').append(archive);
  }
  if(section==='assets')assetView();
- document.querySelector('header label').style.display=['review'].includes(section)?'':'none';
+ document.querySelector('header label').hidden=section!=='review';
 }

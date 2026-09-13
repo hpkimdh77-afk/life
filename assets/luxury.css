@@ -22,3 +22,5 @@ details[open]>div{animation:arrive .25s both}.news-grid{display:grid;grid-templa
 @media print{body,.card,.hero{background:white;color:black;box-shadow:none}.original-frame{height:100vh}*{animation:none!important}}
 
 @media(max-width:700px){nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible}nav a{white-space:normal;letter-spacing:0;font-size:11px}nav a[href="#investment"]{color:var(--gold);border-color:#9a81564a}}
+
+[hidden]{display:none!important}
