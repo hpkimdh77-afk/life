@@ -80,12 +80,14 @@ function render(){
  if(section==='investment'){investmentView();investmentSourcesView();newsView();telegramView();briefingView();}
  if(section==='finance'){
   const planning=document.createElement('div');while($('content').firstChild)planning.append($('content').firstChild);
-  mountOriginalFinance();bonusView();
-  const analysis=document.createElement('details');analysis.className='card';analysis.innerHTML='<summary>엑셀 분석 · 환급·자산 취득을 구분한 소비 분석</summary>';
-  if(window.LEDGER_DATA){ledgerView();analysis.append($('ledger'));}else{analysis.insertAdjacentHTML('beforeend','<p>엑셀 거래내역으로 별도 분석합니다.</p><button onclick="openPrivateLedger()">Excel 불러오기</button>');}
-  $('content').append(analysis);
+  $('title').textContent='가계부';
+  if(window.LEDGER_DATA){ledgerView();}else{$('content').innerHTML='<section class="card"><h2>가계부</h2><p>엑셀을 불러오면 월별 지출·분류·거래내역이 여기에 펼쳐집니다.</p><button onclick="openPrivateLedger()">가계부 엑셀 불러오기</button></section>';}
+  const jump=document.createElement('div');jump.className='row card';jump.innerHTML='<span>보유 종목 · 텔레그램 채널 · 투자 뉴스</span><a class="button primary" href="#investment">투자 · INVESTMENT 바로가기 →</a>';$('content').append(jump);
+  bonusView();
   const details=document.createElement('details');details.className='card';details.innerHTML='<summary>2027 계획·실적 입력</summary>';details.append(planning);$('content').append(details);
+  mountOriginalFinance();
+  const original=$('content').lastElementChild;const archive=document.createElement('details');archive.className='card';archive.innerHTML='<summary>기존 원본 HTML · 불러오기 / 열기</summary>';archive.append(original);$('content').append(archive);
  }
  if(section==='assets')assetView();
- document.querySelector('header label').style.display=['finance','review'].includes(section)?'':'none';
+ document.querySelector('header label').style.display=['review'].includes(section)?'':'none';
 }

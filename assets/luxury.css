@@ -20,3 +20,5 @@ details[open]>div{animation:arrive .25s both}.news-grid{display:grid;grid-templa
 @media(max-width:700px){aside{padding:20px}nav{display:flex;overflow-x:auto;margin-top:18px}nav a{flex:0 0 auto;font-size:10px;padding:12px 8px}main{padding:18px}.original-frame{height:78vh}.original-empty{padding:35px 18px}h1{font-size:28px}.card{padding:18px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 @media print{body,.card,.hero{background:white;color:black;box-shadow:none}.original-frame{height:100vh}*{animation:none!important}}
+
+@media(max-width:700px){nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible}nav a{white-space:normal;letter-spacing:0;font-size:11px}nav a[href="#investment"]{color:var(--gold);border-color:#9a81564a}}
